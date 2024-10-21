@@ -1,0 +1,106 @@
+<html><head><base href="https://websimcreationengine.com/temporizador/"><title>Contador de Tempo até o Horário Alvo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(45deg, #3498db, #8e44ad);
+    color: white;
+  }
+  .container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    margin-bottom: 1rem;
+  }
+  #clock, #countdown {
+    font-size: 2rem;
+    margin: 1rem 0;
+  }
+  input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    margin-right: 0.5rem;
+  }
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #27ae60;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contador de Tempo até o Horário Alvo</h1>
+    <div id="clock"></div>
+    <input type="time" id="targetTime" required>
+    <button onclick="startCountdown()">Iniciar Contagem</button>
+    <div id="countdown"></div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('pt-BR');
+      document.getElementById('clock').textContent = `Hora atual: ${timeString}`;
+    }
+
+    function startCountdown() {
+      const targetTime = document.getElementById('targetTime').value;
+      if (!targetTime) {
+        alert('Por favor, selecione um horário alvo.');
+        return;
+      }
+
+      const [targetHours, targetMinutes] = targetTime.split(':').map(Number);
+      const now = new Date();
+      const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), targetHours, targetMinutes);
+
+      if (target <= now) {
+        target.setDate(target.getDate() + 1);
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          document.getElementById('countdown').textContent = 'Tempo esgotado!';
+          clearInterval(countdownInterval);
+          return;
+        }
+
+        const minutes = Math.floor(diff / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+
+        document.getElementById('countdown').textContent = 
+          `Tempo restante: ${minutes} minutos e ${seconds} segundos`;
+      }
+
+      updateCountdown();
+      const countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body></html>
